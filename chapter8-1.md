@@ -99,7 +99,7 @@ $$
 
 
 ---
-#### Adaboost算法
+#### Adaboost算法1
 ##### 异步社区
 学习$T$个个体学习器$h_t$和相应的权重$\alpha_t$，使得他们的加权和
 $$
@@ -112,7 +112,7 @@ $$
 
 
 ---
-#### Adaboost算法
+#### Adaboost算法2
 ##### 异步社区
 **前向分布求解算法：** 每一轮只学习一个学习器$h_t$和相应的权重$\alpha_t$，第$t$轮的优化目标
 $$
@@ -131,7 +131,7 @@ $$
 
 
 ---
-#### Adaboost算法
+#### Adaboost算法3
 ##### 异步社区
 因为$f(x_i)$和$h(x_i)$仅可取值$\{-1, 1\}$，可以推得
 $$
@@ -140,44 +140,45 @@ $$
 &=\sum_{i=1}^{|D|} \mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)} e^{-\alpha}+\sum_{i=1}^{|D|} \mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}\left(e^{\alpha}-e^{-\alpha}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right) 
 \end{aligned}
 $$
-做一个简单的符号替换，令$\mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right)=\mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}$，并且注意到$e^{-\alpha}$和$e^\alpha-e^{-\alpha}$于求和变量$i$无关，可以提取出来，有
+做一个简单的符号替换，令$\mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)=\mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}$，并且注意到$e^{-\alpha}$和$e^\alpha-e^{-\alpha}$于求和变量$i$无关，可以提取出来，有
 $$
 \begin{aligned}
-\ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right) &= e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
+\ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right) &= e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 \end{aligned}
 $$
 
 ---
-#### Adaboost算法
+#### Adaboost算法4
 ##### 异步社区
 $$
 \begin{aligned}
-\ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right) &= e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
+\ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right) &= e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 \end{aligned}
 $$
 我们的目的是求解$h_t$使得$\ell_{\exp}$最小化，因此可以忽略掉于$h$无关的项，即求解目标是
 $$
-h_{t}=\underset{h}{\arg \min }\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
+h_{t}=\underset{h}{\arg \min }\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 $$
 更近一步，由于$\alpha>\frac{1}{2}$，易证得$e^\alpha-e^{-\alpha}>0$恒成立，因此求解目标为：
 $$
-h_{t}=\underset{h}{\arg \min } \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
+h_{t}=\underset{h}{\arg \min } \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 $$
 
 
 ---
-#### Adaboost算法
+#### Adaboost算法5
 ##### 异步社区
 $$
-h_{t}=\underset{h}{\arg \min } \sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
+h_{t}=\underset{h}{\arg \min } \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 $$
-其中 $\mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right)=\mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}$
-观察$\mathcal{D}_t\left(\boldsymbol{x}_{i}\right)$的形式可以发现它仅与$t-1$轮及以前的学习器有关，因此在求解$h_t$时，对于每个样本$i$，他其实已经固定了，如果把$\mathcal{D}_t\left(\boldsymbol{x}_{i}\right)$看做样本$i$在$t$轮学习时的权重，我们要依据这个权重求解学习器$h_t$以满足上面的最优化式子。
+其中 $\mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)=\mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}$
+观察$\mathcal{D}_t^\prime\left(\boldsymbol{x}_{i}\right)$的形式可以发现它仅与$t-1$轮及以前的学习器有关，因此在求解$h_t$时，对于每个样本$i$，他其实已经固定了，如果把$\mathcal{D}_t^\prime\left(\boldsymbol{x}_{i}\right)$看做样本$i$在$t$轮学习时的权重分布，我们要依据这个权重求解学习器$h_t$以满足上面的最优化式子。
+同时，为了确保$\mathcal{D}_t^\prime\left(\boldsymbol{x}_{i}\right)$是一个分布，通常我们对其进行规范化后作为下一个学习器的输入样本权重，即$\mathcal{D}_t\left(\boldsymbol{x}_{i}\right)=\frac{\mathcal{D}_t^\prime\left(\boldsymbol{x}_{i}\right)}{\sum^{|D|}_{i=1}\mathcal{D}_t^\prime\left(\boldsymbol{x}_{i}\right)}$，其中分母是常数，因此这个变换不会影响上述最小化的求解。
 
 
 
 ---
-#### Adaboost算法
+#### Adaboost算法6
 ##### 异步社区
 有意思的一点是，$t$轮的样本权重可以通过$t-1$轮样本权重计算，而无需从头算起，以$t+1$轮为例，根据迭代公式，有：
 $$
@@ -191,7 +192,7 @@ $$
 这便是《机器学习》式8.19
 
 ---
-#### Adaboost算法
+#### Adaboost算法7
 ##### 异步社区
 下面求解学习器$h_t$的权重$\alpha_t$。损失函数$\ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right)$对$\alpha$求导有：
 $$
@@ -200,23 +201,79 @@ $$
 &=-e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}+e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 \end{aligned}
 $$
+令导数等于0，移项可得：
+$$
+\begin{aligned}
+\frac{e^{-\alpha}}{e^{\alpha}+e^{-\alpha}} &=\frac{\sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)}{\sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right)}=\sum_{i=1}^{|D|} \frac{\mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right)}{Z_{t}} \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right) \\
+&=\sum_{i=1}^{|D|} \mathcal{D}_{t}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}\left[\mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)\right] =\epsilon_{t}
+\end{aligned}
+$$
 
 ---
-#### CART决策树
+#### Adaboost算法8
 ##### 异步社区
-CART决策树的实际构造算法如下：
-- 首先，对每个属性$a$的每个可能取值$v$，将数据集$D$分为$a=v$和$a\neq v$两部分来计算基尼指数，即
-$$\operatorname{Gini\_index}(D,a) = \frac{|D^{a=v}|}{|D|}\operatorname{Gini}(D^{a=v})+\frac{|D^{a\neq v}|}{|D|}\operatorname{Gini}(D^{a\neq v})$$
-- 然后，选择基尼指数最小的属性及其对应取值作为最优划分属性和最优划分点；
-- 最后，重复以上两步，直至满足停止条件。
+$$
+\begin{aligned}
+\frac{e^{-\alpha}}{e^{\alpha}+e^{-\alpha}}=\frac{1}{e^{2 \alpha}+1} & \Rightarrow e^{2 \alpha}+1=\frac{1}{\epsilon_{t}} \Rightarrow e^{2 \alpha}=\frac{1-\epsilon_{t}}{\epsilon_{t}} \Rightarrow 2 \alpha=\ln \left(\frac{1-\epsilon_{t}}{\epsilon_{t}}\right) \\
+& \Rightarrow \alpha_{t}=\frac{1}{2} \ln \left(\frac{1-\epsilon_{t}}{\epsilon_{t}}\right)
+\end{aligned}
+$$
+这便是《机器学习》式8.11
+当$\epsilon>\frac{1}{2}$时，上式单调递减，因此误差率越大的学习器分配的权重越少。
 
-具体例子参见《机器学习公式详解》（南瓜书）式（4.6）的解析~
+---
+#### Adaboost算法9
+##### 异步社区
+![adaboost](./images/adaboost.png)
 
 ---
 #### 预告
 ##### 异步社区
-下一节：神经网络
-西瓜书对应章节：5.1、5.2、5.3
+下一节：Bagging、随机森林、多样性增强
+增补知识点：GB(Gradient Boosting)/GBDT/XGBoost
+西瓜书对应章节：8.3 8.5
+增补知识点参考资料：略
+
+
+---
+#### Bagging
+##### 异步社区
+Bagging是并行式集成学习的代表。我们可采样出$T$个含$m$训练样本的采样集，基于每个采样集训练一个基学习器然后将他们结合起来进行预测。
+
+自助采样法（booststrap sampling）:
+假设从$n$个样本有放回地抽出$n$个样本，$n$次抽样后，有的样本会重复被抽到，有的样本没有被抽到，取没有被抽到的样本作为验证集，它们占比约为：
+$$
+lim_{n\rightarrow\infin}{\left(1-\frac{1}{n}\right)}^n=e\approx36.8\%
+$$
+
+
+---
+#### 随机森林
+##### 异步社区
+随机森林（Random Forest）是Bagging的一个扩展变体，在以决策树为基学习器构建Bagging集成的基础上，进一步在决策树的训练过程中引入了属性的随机选择。
+
+假设样本包含$d$个属性对基决策树的每个节点，先从该节点的属性结合中随机选择包含$k$（$k\le d$）个属性的子集用来进行最优划分。
+
+随机森林训练效率通常由于Bagging，因为每个节点的划分只需要部分属性参与，而随机森林的泛化误差通常低于bagging，因为属性的扰动为每个基决策树提供了更高的鲁棒性（不易过拟合到训练集上）。
+
+---
+#### 多样性增强
+##### 异步社区
+1. 数据样本扰动
+    - 对输入扰动敏感的基学习器：决策树、神经网络等
+    - 对输入扰动不敏感的基学习器：支持向量机、k近邻等
+2. 输入属性扰动
+    - 对包含有大量冗余属性的数据能够大幅加速训练效率
+3. 输出属性扰动
+    - 随机改变一些训练样本的标记
+    - Dropout
+4. 算法参数扰动
+    - 显示正则化
+
+---
+#### Gradient Boosting
+##### 异步社区
+
 
 ---
 #### 结束语
