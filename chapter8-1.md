@@ -191,17 +191,15 @@ $$
 这便是《机器学习》式8.19
 
 ---
-#### CART决策树
+#### Adaboost算法
 ##### 异步社区
-属性$a$的基尼指数（类比信息熵和条件熵）：
+下面求解学习器$h_t$的权重$\alpha_t$。损失函数$\ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right)$对$\alpha$求导有：
 $$
-\text {Gini\_index}(D, a)=\sum_{v=1}^{V} \frac{\left|D^{v}\right|}{|D|} \operatorname{Gini}\left(D^{v}\right)
+\begin{aligned}
+\frac{\partial \ell_{\exp }\left(H_{t-1}+\alpha h_{t} \mid \mathcal{D}\right)}{\partial \alpha} &=\frac{\partial\left(e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)\right)}{\partial \alpha} \\
+&=-e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}+e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^{\prime}\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
+\end{aligned}
 $$
-CART决策树：选择基尼指数最小的属性作为最优划分属性
-$$
-a_{*}=\underset{a \in A}{\arg \min } \text { Gini\_index }(D, a)
-$$
-那具体的划分点呢？
 
 ---
 #### CART决策树
