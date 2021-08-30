@@ -76,8 +76,6 @@ p {
 
 
 
-
-
 ---
 #### 个体与集成
 ##### 异步社区
@@ -94,7 +92,7 @@ k
 $$
 两个基本结论：
 - 收敛速率随着个体学习器数量T呈指数下降
-- $\epsilon\le 0.5$的个体集成器对收敛没有作用
+- $\epsilon= 0.5$的个体集成器对收敛没有作用
 
 
 
@@ -140,7 +138,7 @@ $$
 &=\sum_{i=1}^{|D|} \mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)} e^{-\alpha}+\sum_{i=1}^{|D|} \mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}\left(e^{\alpha}-e^{-\alpha}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right) 
 \end{aligned}
 $$
-做一个简单的符号替换，令$\mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)=\mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}$，并且注意到$e^{-\alpha}$和$e^\alpha-e^{-\alpha}$于求和变量$i$无关，可以提取出来，有
+做一个简单的符号替换，令$\mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)=\mathcal{D}\left(\boldsymbol{x}_{i}\right) e^{-f\left(\boldsymbol{x}_{i}\right) H_{t-1}\left(\boldsymbol{x}_{i}\right)}$，并且注意到$e^{-\alpha}$和$e^\alpha-e^{-\alpha}$与求和变量$i$无关，可以提取出来，有
 $$
 \begin{aligned}
 \ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right) &= e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
@@ -155,7 +153,7 @@ $$
 \ell_{\exp }\left(H_{t-1}+\alpha h \mid \mathcal{D}\right) &= e^{-\alpha} \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right)+\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 \end{aligned}
 $$
-我们的目的是求解$h_t$使得$\ell_{\exp}$最小化，因此可以忽略掉于$h$无关的项，即求解目标是
+我们的目的是求解$h_t$使得$\ell_{\exp}$最小化，因此可以忽略掉与$h$无关的项，即求解目标是
 $$
 h_{t}=\underset{h}{\arg \min }\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 $$
@@ -235,7 +233,7 @@ $$
 增补知识点参考资料：略
 
 
----
+<!-- ---
 #### Bagging
 ##### 异步社区
 Bagging是并行式集成学习的代表。我们可采样出$T$个含$m$训练样本的采样集，基于每个采样集训练一个基学习器然后将他们结合起来进行预测。
@@ -273,7 +271,14 @@ $$
 ---
 #### Gradient Boosting
 ##### 异步社区
-
+将AdaBoost问题一般化，即不限定损失函数为指数函数，也不限定局限于二分类问题，那么更一般的Booting形式为：
+$$
+\begin{aligned}
+\ell\left(H_{t} \mid \mathcal{D}\right) &=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\operatorname{err}\left(H_{t}(\boldsymbol{x}), f(\boldsymbol{x})\right)\right] \\
+&=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\operatorname{err}\left(H_{t-1}(\boldsymbol{x})+\alpha_{t} h_{t}(\boldsymbol{x}), f(\boldsymbol{x})\right)\right]
+\end{aligned}
+$$
+比如当我们研究是是回归问题时，$f(x)\in \mathbb{R}$且损失函数为平方损失函数$\operatorname{err}\left(H_t(\boldsymbol{x}), f(\boldsymbol{x})\right)=\left(\right)$ -->
 
 ---
 #### 结束语
