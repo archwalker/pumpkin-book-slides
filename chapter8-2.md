@@ -149,7 +149,7 @@ XGBoost 即eXtreme Gradient Boosting的缩写，XGBoost 与GBDT的关系可以�
 ---
 #### 预告
 ##### 异步社区
-下一节：聚类
+下一节：聚类、性能和距离度量、原型聚类和密度聚类
 西瓜书对应章节：第9章
 
 ---
