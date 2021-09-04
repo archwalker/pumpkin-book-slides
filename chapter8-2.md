@@ -53,47 +53,12 @@ p {
 ---
 #### 本节大纲
 ##### 异步社区
-西瓜书对应章节：8.3、8.4
+南瓜书对应章节：8.3、8.4
+
+0. 增补知识点：GB(Gradient Boosting)/GBDT/XGBoost
 1. Bagging
 2. 随机森林（Random Forest）
 3. 多样性增强方法
-4. 增补知识点：GB(Gradient Boosting)/GBDT/XGBoost
-
-
----
-#### Bagging
-##### 异步社区
-Bagging是并行式集成学习的代表。我们可采样出$T$个含$m$训练样本的采样集，基于每个采样集训练一个基学习器然后将他们结合起来进行预测。
-
-自助采样法（booststrap sampling）:
-假设从$n$个样本有放回地抽出$n$个样本，$n$次抽样后，有的样本会重复被抽到，有的样本没有被抽到，取没有被抽到的样本作为验证集，它们占比约为：
-$$
-lim_{n\rightarrow\infin}{\left(1-\frac{1}{n}\right)}^n=e\approx36.8\%
-$$
-
-
----
-#### 随机森林
-##### 异步社区
-随机森林（Random Forest）是Bagging的一个扩展变体，在以决策树为基学习器构建Bagging集成的基础上，进一步在决策树的训练过程中引入了属性的随机选择。
-
-假设样本包含$d$个属性对基决策树的每个节点，先从该节点的属性结合中随机选择包含$k$（$k\le d$）个属性的子集用来进行最优划分。
-
-随机森林训练效率通常由于Bagging，因为每个节点的划分只需要部分属性参与，而随机森林的泛化误差通常低于bagging，因为属性的扰动为每个基决策树提供了更高的鲁棒性（不易过拟合到训练集上）。
-
----
-#### 多样性增强
-##### 异步社区
-1. 数据样本扰动
-    - 对输入扰动敏感的基学习器：决策树、神经网络等
-    - 对输入扰动不敏感的基学习器：支持向量机、k近邻等
-2. 输入属性扰动
-    - 对包含有大量冗余属性的数据能够大幅加速训练效率
-3. 输出属性扰动
-    - 随机改变一些训练样本的标记
-    - Dropout
-4. 算法参数扰动
-    - 显式正则化
 
 ---
 #### Gradient Boosting
@@ -109,7 +74,7 @@ $$
 
 
 ---
-#### Gradient Boosting 2
+#### Gradient Boosting 1
 ##### 异步社区
 类似于 AdaBoost，第$t$轮得到$\alpha_t$, $h_t(\boldsymbol{x})$,可先对损失函数在$H_{t-1}(\boldsymbol{x})$处进行泰勒展开：
 $$
@@ -122,7 +87,7 @@ $$
 
 
 ---
-#### Gradient Boosting 3
+#### Gradient Boosting 2
 ##### 异步社区
 
 上式中括号内第1项为常量 $\ell\left(H_{t-1} \mid \mathcal{D}\right)$，因此最小化 $\ell\left(H_{t} \mid \mathcal{D}\right)$ 只需要最小化第二项即可。先不考虑$\alpha_t$，求解如下优化问题即可得到$h_t(\boldsymbol{x})$：
@@ -135,15 +100,82 @@ $$
 \alpha_{t}=\underset{\alpha}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\operatorname{err}\left(H_{t-1}(\boldsymbol{x})+\alpha h_{t}(\boldsymbol{x}), f(\boldsymbol{x})\right)\right]
 $$
 
-以上就是梯度提升(Gradient Boosting)的理论框架，即每轮通过梯度(Gradient)下降的方式将
-个弱学习器提升(Boosting)为强学习器。可以看出 AdaBoost 是其特殊形式。
+以上就是梯度提升(Gradient Boosting)的理论框架，即每轮通过梯度(Gradient)下降的方式将个体弱学习器提升(Boosting)为强学习器。可以看出 AdaBoost 是其特殊形式。
+
+---
+#### Adaboost 再推导
+##### 异步社区
+$$
+\begin{aligned}
+h_{t}(\boldsymbol{x})&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\left.\frac{\partial \operatorname{err}\left(H_{t}(\boldsymbol{x}), f(\boldsymbol{x})\right)}{\partial H_{t}(\boldsymbol{x})}\right|_{H_{t}(\boldsymbol{x})=H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]\\
+&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\left.\frac{\partial e^{-f(\boldsymbol{x}) H_{t}(\boldsymbol{x})}}{\partial H_{t}(\boldsymbol{x})}\right|_{H_{t}(\boldsymbol{x})=H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]\\
+&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[-f(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]
+=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[- f(\boldsymbol{x})h(\boldsymbol{x})\right]\\
+\end{aligned}
+$$
+由$f(\boldsymbol{x}), h(\boldsymbol{x})\in\{-1, 1\}$，有
+$$
+f(\boldsymbol{x}) h(\boldsymbol{x})=1-2 \mathbb{I}(f(\boldsymbol{x}) \neq h(\boldsymbol{x}))
+$$
+因此，得到《机器学习》式8.18
+$$
+h_{t}(\boldsymbol{x})=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}[\mathbb{I}(f(\boldsymbol{x}) \neq h(\boldsymbol{x}))]
+$$
+
+
 
 ---
 #### GBDT 和 XGBoost
 ##### 异步社区
 
-GBDT 是按照Gradient Boosting + CART 处理回归问题演变的。
+GBDT 以Gradient Boosting为基本框架，并使用CART作为个体学习器。
+1. 针对回归问题，GBDT 采用平方损失作为损失函数。$\operatorname{err}\left(H_t(\boldsymbol{x}), f(\boldsymbol{x})\right)=\left(H_t(\boldsymbol{x})-f(\boldsymbol{x})\right)^2$
+2. 针对二分类问题，GBDT采用对数似然损失函数 $\operatorname{err}\left(H_t(\boldsymbol{x}), f(\boldsymbol{x})\right)=\log\left(1+\exp\left(-H_t(\boldsymbol{x})f\boldsymbol{x}\right)\right)$
+
 XGBoost 即eXtreme Gradient Boosting的缩写，XGBoost 与GBDT的关系可以类比为LIBSVM和SVM的关系，即XGBoost是GBDT的一种高效实现和改进。
+
+
+---
+#### Bagging
+##### 异步社区
+Bagging是并行式集成学习的代表。我们可采样出$T$个含$m$训练样本的采样集，基于每个采样集训练一个基学习器然后将他们结合起来进行预测。
+![adaboost](./images/bagging.png)
+
+自助采样法（booststrap sampling）:
+假设从$n$个样本有放回地抽出$n$个样本，$n$次抽样后，有的样本会重复被抽到，有的样本没有被抽到，取没有被抽到的样本作为验证集，它们占比约为：
+$$
+lim_{n\rightarrow\infin}{\left(1-\frac{1}{n}\right)}^n=\frac{1}{e}\approx36.6\%
+$$
+
+<!-- ---
+#### Bagging
+##### 异步社区 -->
+
+
+
+---
+#### 随机森林
+##### 异步社区
+随机森林（Random Forest）是Bagging的一个扩展变体，在以决策树为基学习器构建Bagging集成的基础上，进一步在决策树的训练过程中引入了属性的随机选择。
+
+假设样本包含$d$个属性对基决策树的每个节点，先从该节点的属性结合中随机选择包含$k$（$k\le d$）个属性的子集用来进行最优划分。
+
+随机森林训练效率通常优于Bagging，因为每个节点的划分只需要部分属性参与，而随机森林的泛化误差通常低于bagging，因为属性的扰动为每个基决策树提供了更高的鲁棒性（不易过拟合到训练集上）。
+
+---
+#### 多样性增强
+##### 异步社区
+1. 数据样本扰动
+    - 对输入扰动敏感的基学习器：决策树、神经网络等
+    - 对输入扰动不敏感的基学习器：线性学习器、支持向量机、朴素贝叶斯、k近邻等
+2. 输入属性扰动
+    - 对包含有大量冗余属性的数据能够大幅加速训练效率
+3. 输出属性扰动
+    - 随机改变一些训练样本的标记
+    - Dropout
+4. 算法参数扰动
+    - L1、L2正则化等
+
 
 
 ---

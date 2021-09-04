@@ -157,7 +157,7 @@ $$
 $$
 h_{t}=\underset{h}{\arg \min }\left(e^{\alpha}-e^{-\alpha}\right) \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 $$
-更近一步，由于$\alpha>\frac{1}{2}$，易证得$e^\alpha-e^{-\alpha}>0$恒成立，因此求解目标为：
+更近一步，由于$\alpha>0$，易证得$e^\alpha-e^{-\alpha}>0$恒成立，因此求解目标为：
 $$
 h_{t}=\underset{h}{\arg \min } \sum_{i=1}^{|D|} \mathcal{D}_{t}^\prime\left(\boldsymbol{x}_{i}\right) \mathbb{I}\left(f\left(\boldsymbol{x}_{i}\right) \neq h\left(\boldsymbol{x}_{i}\right)\right)
 $$
