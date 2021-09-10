@@ -103,16 +103,33 @@ $$
 以上就是梯度提升(Gradient Boosting)的理论框架，即每轮通过梯度(Gradient)下降的方式将个体弱学习器提升(Boosting)为强学习器。可以看出 AdaBoost 是其特殊形式。
 
 ---
-#### Adaboost 再推导
+#### Adaboost 再推导1
 ##### 异步社区
 $$
 \begin{aligned}
 h_{t}(\boldsymbol{x})&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\left.\frac{\partial \operatorname{err}\left(H_{t}(\boldsymbol{x}), f(\boldsymbol{x})\right)}{\partial H_{t}(\boldsymbol{x})}\right|_{H_{t}(\boldsymbol{x})=H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]\\
 &=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\left.\frac{\partial e^{-f(\boldsymbol{x}) H_{t}(\boldsymbol{x})}}{\partial H_{t}(\boldsymbol{x})}\right|_{H_{t}(\boldsymbol{x})=H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]\\
-&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[-f(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]
-=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[- f(\boldsymbol{x})h(\boldsymbol{x})\right]\\
+&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[-f(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} h(\boldsymbol{x})\right]=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[- e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} f(\boldsymbol{x})h(\boldsymbol{x})\right]\\
 \end{aligned}
 $$
+注意到$\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} \right]$是一个常数，令
+$$
+\mathcal{D}_{t}(\boldsymbol{x})=\frac{\mathcal{D}(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\right]}
+$$
+
+
+---
+#### Adaboost 再推导2
+##### 异步社区
+
+根据数学期望的定义，这等价于令
+$$
+\begin{aligned}
+h_{t}(\boldsymbol{x}) &=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[-\frac{e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\right]} f(\boldsymbol{x}) h(\boldsymbol{x})\right] \\
+&=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}[-f(\boldsymbol{x}) h(\boldsymbol{x})]
+\end{aligned}
+$$
+
 由$f(\boldsymbol{x}), h(\boldsymbol{x})\in\{-1, 1\}$，有
 $$
 f(\boldsymbol{x}) h(\boldsymbol{x})=1-2 \mathbb{I}(f(\boldsymbol{x}) \neq h(\boldsymbol{x}))
@@ -121,7 +138,6 @@ $$
 $$
 h_{t}(\boldsymbol{x})=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}[\mathbb{I}(f(\boldsymbol{x}) \neq h(\boldsymbol{x}))]
 $$
-
 
 
 ---
