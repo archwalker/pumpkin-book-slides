@@ -104,14 +104,14 @@ VDM（Value Difference Metric）度量。
 $$
 \operatorname{VDM}_{p}(a, b)=\sum_{i=1}^{k}\left|\frac{m_{u, a, i}}{m_{u, a}}-\frac{m_{u, b, i}}{m_{u, b}}\right|^{p}
 $$
-![bg right](./images/xigua_dataset2.png)
+![bg right w:600](./images/xigua_dataset2.png)
 
 
 ---
 #### kmeans （原型聚类）
 ##### 异步社区
 原型（prototype）指类结构能通过一组典型的特例刻画。比如男、女类似的。
-给定样本集$D=\left\{\boldsymbol{x}_{1}, \boldsymbol{x}_{2}, \ldots, \boldsymbol{x}_{m}\right\}$，k均值算法针对聚类所得簇划分$\mathcal{C}=\left\{C_{1}, C_{2}, \ldots, C_{k}\right\}$最小化平方误差
+给定样本集$D=\left\{\boldsymbol{x}_{1}, \boldsymbol{x}_{2}, \ldots, \boldsymbol{x}_{m}\right\}$，k均值算法针对聚类所得簇划分$\mathcal{C}=\left\{C_{1}, C_{2}, \ldots, C_{k}\right\}$，求解最小化平方误差问题
 $$
 E=\sum_{i=1}^{k} \sum_{\boldsymbol{x} \in C_{i}}\left\|\boldsymbol{x}-\boldsymbol{\mu}_{i}\right\|_{2}^{2}
 $$
