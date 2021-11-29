@@ -127,18 +127,6 @@ $表示簇$\mathcal{C}_i$的均值向量。
 
 ![w:700](./images/kmeans.png)
 
-
----
-#### GBDT 和 XGBoost
-##### 异步社区
-
-GBDT 以Gradient Boosting为基本框架，并使用CART作为个体学习器。
-1. 针对回归问题，GBDT 采用平方损失作为损失函数。$\operatorname{err}\left(H_t(\boldsymbol{x}), f(\boldsymbol{x})\right)=\left(H_t(\boldsymbol{x})-f(\boldsymbol{x})\right)^2$
-2. 针对二分类问题，GBDT采用对数似然损失函数 $\operatorname{err}\left(H_t(\boldsymbol{x}), f(\boldsymbol{x})\right)=\log\left(1+\exp\left(-H_t(\boldsymbol{x})f\boldsymbol{x}\right)\right)$
-
-XGBoost 即eXtreme Gradient Boosting的缩写，XGBoost 与GBDT的关系可以类比为LIBSVM和SVM的关系，即XGBoost是GBDT的一种高效实现和改进。
-
-
 ---
 #### 密度聚类
 ##### 异步社区
