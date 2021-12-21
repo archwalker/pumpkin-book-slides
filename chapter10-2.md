@@ -70,7 +70,7 @@ p {
 ---
 #### 等度量映射(Isometric Mapping)
 ##### 异步社区
-保持近邻样本之间的距离，因为测地线距离和高危空间的直线距离是不相等的
+保持近邻样本之间的距离，因为测地线距离和高维空间的直线距离是不相等的
 ![w:1000](./images/ISO.png)
 
 
@@ -102,86 +102,68 @@ $$
 ![w:700](./images/LLE.png)
 
 
-
-
 ---
-#### 局部线性嵌入
+#### 度量学习
 ##### 异步社区
+每个空间其实对应了样本属性上定义的距离度量，寻找合适的空间的本质是寻找一个合适的距离度量。度量学习的基本动机是学习得到一个合理的“度量”。
+之前我们介绍了很多计算距离的表达式（欧式距离等），但是“它们”都是固定的，没有可调节的参数，因此要先做一个推广。
+欧式距离定义为
+$$
+\operatorname{dist}_{\mathrm{ed}}^{2}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left\|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right\|_{2}^{2}=\operatorname{dist}_{i j, 1}^{2}+\operatorname{dist}_{i j, 2}^{2}+\ldots+\operatorname{dist}_{i j, d}^{2}
+$$
+假设不同属性的重要性不同，则可引入属性权重$w$
+$$
+\begin{aligned}
+\operatorname{dist}_{\text {wed }}^{2}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right) &=\left\|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right\|_{2}^{2}=w_{1} \cdot \operatorname{dist}_{i j, 1}^{2}+w_{2} \cdot \operatorname{dist}_{i j, 2}^{2}+\ldots+w_{d} \cdot d i s t_{i j, d}^{2} \\
+&=\left(\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right)^{\mathrm{T}} \mathbf{W}\left(\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right)
+\end{aligned}
+$$
 
-假设$\mathbf{Z}$的第$i$行记作$\mathbf{Z}_{i\cdot}$ 该行的均值记作$\bar{\boldsymbol{z}}$则
-$$\sum^{d'}_{i=1}\frac{1}{m}\left(\mathbf{Z}_{i\cdot}-\bar{\boldsymbol{z}}\right)\left(\mathbf{Z}_{i\cdot}-\bar{\boldsymbol{z}}\right)^\mathrm{T}=\frac{1}{m}\sum^{d'}_{i=1}\mathbf{Z}_{i\cdot}\mathbf{Z}^\mathrm{T}_{i\cdot}=\frac{1}{m}\mathrm{tr}\left(\mathbf{Z}\mathbf{Z}^\mathrm{T}\right)
-$$
-根据之前定义的记号：$\mathbf{Z}=\mathbf{W}^{\mathrm{T}} \mathbf{X}$
-忽略常数项，优化目标可写为
-$$
-\begin{array}{ll}
-\max_{\mathbf{W}} & \operatorname{tr}\left(\mathbf{W}^{\mathrm{T}} \mathbf{X} \mathbf{X}^{\mathrm{T}} \mathbf{W}\right) \\\\
-\text { s.t. } & \mathbf{W}^{\mathrm{T}} \mathbf{W}=\mathbf{I}
-\end{array}
-$$
-
----
-#### 主成分分析-求解
-##### 异步社区
-使用拉格朗日乘子法，写出拉格朗日函数
-$$
-L(\mathbf{W}, \boldsymbol{\Lambda})=-\operatorname{tr}\left(\mathbf{W}^{\top} \mathbf{X X}^{\top} \mathbf{W}\right)+\left(\mathbf{W}^{\top} \mathbf{W}-\mathbf{I}\right) \boldsymbol{\Lambda}
-$$
-其中，
-$$
-\Lambda=\left[\begin{array}{cccc}
-\lambda_{1} & & & \\
-& \lambda_{2} & & \\
-& & \ddots & \\
-& & & \lambda_{d^{\prime}}
-\end{array}\right] \in \mathbb{R}^{d^{\prime} \times d^{\prime}}, \mathbf{I}=\left[\begin{array}{cccc}
-1 & & & \\
-& 1 & & \\
-& & \ddots & \\
-& & & 1
-\end{array}\right] \in \mathbb{R}^{d^{\prime} \times d^{\prime}}
-$$
+其中  $w_{i} \geqslant 0$, $\mathbf{W}=\operatorname{diag}(\boldsymbol{w})$是一个对角矩阵, $(\mathbf{W})_{i i}=w_{i}$
 
 
 
 
 --- 
-#### 主成分分析-求解2
+#### 度量学习2
 ##### 异步社区
 
-对$\mathbf{W} \in \mathbb{R}^{d \times d^{\prime}}$求导：
+通过以上方式，我们引入了变量$\mathbf{W}$，但是这样引入存在一个问题，因为$\mathbf{W}$的非对角线元素为0，因此坐标轴是正交的，意味着属性之间无关。为了更加符合实际，引入属性之间的关联性，可将$\mathbf{W}$替换成一个半正定对称矩阵$\mathbf{M}$，且$\mathbf{M}=\mathbf{P}^\mathbf{T}\mathbf{P}$，于是就得到了马氏距离
 $$
-\begin{aligned}
-\frac{\partial L(\mathbf{W}, \boldsymbol{\Lambda})}{\partial \mathbf{W}} &=-\frac{\partial \operatorname{tr}\left(\mathbf{W}^{\top} \mathbf{X} \mathbf{X}^{\top} \mathbf{W}\right)}{\partial \mathbf{W}}+\frac{\partial\left(\mathbf{W}^{\top} \mathbf{W}-\mathbf{I}\right)}{\partial \mathbf{W}} \boldsymbol{\Lambda} \\
-&=-\mathbf{X X}^{\top} \mathbf{W}-\left(\mathbf{X X}^{\top}\right)^{\top} \mathbf{W}+2 \mathbf{W} \boldsymbol{\Lambda} \\
-&=-2 \mathbf{X} \mathbf{X}^{\top} \mathbf{W}+2 \mathbf{W} \mathbf{\Lambda}
-\end{aligned}
+\operatorname{dist}_{\operatorname{mah}}^{2}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left(\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right)^{\mathrm{T}} \mathbf{M}\left(\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right)
+=\left(\mathbf{P}\left(\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right)\right)^{\mathrm{T}} \left(\mathbf{P}\left(\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right)\right)=\left\|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right\|_{\mathbf{M}}^{2}
 $$
-另偏导$\frac{\partial L(\mathbf{W}, \boldsymbol{\Lambda})}{\partial \mathbf{W}}=0$，得：
-$$
-\mathbf{X X}^{\top} \mathbf{W}=\mathbf{W} \boldsymbol{\Lambda}
-$$
-或者将此式拆分成$d'$个式子：
-$$
-\mathbf{X X}^{\top} \boldsymbol{w}_{i}=\lambda_{i} \boldsymbol{w}_{i}, 1 \leqslant i \leqslant d
-$$
-即求矩阵$\mathbf{X X}^{\top} \in \mathbb{R}^{d \times d}$特征值和特征向量的形式。
+
+如何学习$\mathbf{M}$？$\mathbf{M}$的学习与下游任务有关，比如如果我们希望提高近邻分类器的性能，则可将$\mathbf{M}$嵌入近邻分类器的评价指标里去，下面以近邻成分分析(Neighborhood Component Analysis) 为例解释这个过程。
 
 
 ---
-#### 主成分分析-求解3
+#### 度量学习3 - NCA
 ##### 异步社区
-$\mathbf{X X}^{\top} \in \mathbb{R}^{d \times d}$有$d$个特征向量，但是我们只需要其中$d'$个，如何选择特征向量？
-对 $\mathbf{X X}^{\top} \mathbf{W}=\mathbf{W} \boldsymbol{\Lambda}$ 两边同乘 $\mathbf{W}^{\top}$, 得
+前面介绍过得近邻算法（kNN）以邻居投票的形式决定自身的标签，假设将一邻一票替换成概率投票，即对于样本$\boldsymbol{x}_i$，他的邻居$\boldsymbol{x}_j$给他投票
 $$
-\mathbf{W}^{\top} \mathbf{X X}^{\top} \mathbf{W}=\mathbf{W}^{\top} \mathbf{W} \mathbf{\Lambda}=\mathbf{\Lambda}
+p_{i j}=\frac{\exp \left(-\left\|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right\|_{\mathbf{M}}^{2}\right)}{\sum_{l} \exp \left(-\left\|\boldsymbol{x}_{i}-\boldsymbol{x}_{l}\right\|_{\mathbf{M}}^{2}\right)}
 $$
-我们的优化目标
+那么样本$\boldsymbol{x}_i$被预测正确的概率为
 $$
-\operatorname{tr}\left(\mathbf{W}^{\top} \mathbf{X X}^{\top} \mathbf{W}\right)=\operatorname{tr}(\boldsymbol{\Lambda})=\sum_{i=1}^{d} \lambda_{i}
+p_{i}=\sum_{j \in \Omega_{i}} p_{i j}
 $$
-因此最大化迹即选择最大的$d'$个$\lambda_i$，和它们所对应的$w_i$组成矩阵$\mathbf{W}$
+其中$\Omega_{i}$表示和$\boldsymbol{x}_i$标签一致的样本集合（不包含$\boldsymbol{x}_i$自身）。
 
+
+---
+#### 度量学习 - NCA续
+##### 异步社区
+整个样本集上的错误率为
+$$
+\epsilon = 1 - \sum_{i=1}^{m} p_{i}=1- \sum_{i=1}^{m} \sum_{j \in \Omega_{i}} p_{i j}
+$$
+带入$p_{ij}$的计算公式，那么为了最小化分类错误率，有
+$$
+\min _{\mathbf{P}} 1-\sum_{i=1}^{m} \sum_{j \in \Omega_{i}} \frac{\exp \left(-\left\|\mathbf{P}^{\mathrm{T}} \boldsymbol{x}_{i}-\mathbf{P}^{\mathrm{T}} \boldsymbol{x}_{j}\right\|_{2}^{2}\right)}{\sum_{l} \exp \left(-\left\|\mathbf{P}^{\mathrm{T}} \boldsymbol{x}_{i}-\mathbf{P}^{\mathrm{T}} \boldsymbol{x}_{l}\right\|_{2}^{2}\right)}
+$$
+
+上式可以用随机梯度下降的方式求解。
 
 
 
@@ -189,10 +171,10 @@ $$
 ---
 #### 预告
 ##### 异步社区
-下一节：降维和度量学习(下)
-流形学习
-度量学习
-西瓜书对应章节：10.5 10.6
+下一节：特征选择和稀疏学习
+特征选择
+稀疏学习
+西瓜书对应章节：第11章
 
 ---
 #### 结束语
